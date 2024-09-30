@@ -1,1 +1,28 @@
-{}
+{
+    "extends": ["airbnb", "plugin:react/jsx-runtime"],
+    "env": {
+        "es6": true
+    },
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "sourceType": "module"
+    },
+    "rules": {
+        "react/jsx-filename-extension": [
+            1,
+            {
+                "extensions": [".js"]
+            }
+        ],
+        "react/state-in-constructor": "off",
+        "indent": ["error", 4],
+        "react/jsx-indent": ["error", 4],
+        "max-len": ["error", { "code": 100 }]
+    },
+    "ignorePatterns": ["node_modules/**", "webpack.config.js"],
+    "globals": {
+        "window": true,
+        "document": true
+    }
+}

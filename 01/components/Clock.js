@@ -1,17 +1,16 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
 import ClockTime from './ClockTime';
 import ClockDate from './ClockDate';
 
-const Clock = props => {
+function Clock({ date }) {
     return (
         <>
-            <ClockTime date={props.date} />
-            <ClockDate date={props.date} />
+            <ClockTime date={date} />
+            <ClockDate date={date} />
         </>
     );
-};
+}
 
 Clock.propTypes = {
     date: PropTypes.instanceOf(Date).isRequired,
