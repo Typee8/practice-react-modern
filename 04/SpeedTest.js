@@ -6,32 +6,21 @@ import Stopwatch from './Stopwatch';
 
 function SpeedTest() {
     const [word, regenerateWord] = useRandomItem(['devmentor.pl', 'abc', 'JavaScript']);
-    const [text, setText] = useState();
-    const [isStopWatchRunning, setIsStopWatchRunning] = useState();
-    /*     const [passedTime, setPassedTime] = useState(0); */
-    /*     const passedTimeID = useRef(); */
-    const [signsTotalLength, setSignsTotalLength] = useState();
+    const [text, setText] = useState('');
+    const [isStopWatchRunning, setIsStopWatchRunning] = useState(false);
+    const [signsTotalLength, setSignsTotalLength] = useState(0);
     const [scores, setScores] = useState(null);
+    const wordInputRef = useRef();
 
     useEffect(() => {
         regenerateWord();
     }, []);
 
-    /*     function startCount() {
-        passedTimeID.current = setInterval(() => {
-            setPassedTime((prevTime) => prevTime + 1);
-        }, 10);
-    }
-
-    function stopCount() {
-        clearInterval(passedTimeID.current);
-    } */
-
     function convertTime(centiseconds) {
-        const outputCentiseconds = centiseconds % 60;
-        const seconds = Math.floor(centiseconds / 100) % 60;
-        const minutes = Math.floor(centiseconds / 6000) % 60;
-        const hours = Math.floor(centiseconds / 360000) % 60;
+        let outputCentiseconds = centiseconds % 100;
+        const seconds = Math.floor((centiseconds % 6000) / 100);
+        const minutes = Math.floor((centiseconds % 360000) / 6000);
+        const hours = Math.floor(centiseconds / 360000);
 
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(
             seconds,
@@ -42,15 +31,15 @@ function SpeedTest() {
         setText(evt.target.value);
         console.log(text);
         if (word === evt.target.value) {
-            /*             console.log(passedTimeID.current); */
-            /*             clearInterval(passedTimeID.current); */
-            /*             setSignsTotalLength((prevLength) => prevLength + text.length); */
+            wordInputRef.current.blur();
+            setSignsTotalLength((prevLength) => prevLength + text.length);
             setScores({
                 scores,
                 word: evt.target.value,
                 wordLength: evt.target.value.length,
                 /*                 passedTime: convertTime(passedTime), */
             });
+            setText('');
             alert('Correct!');
         }
     }
@@ -75,6 +64,7 @@ function SpeedTest() {
                     onBlur={() => setIsStopWatchRunning(false)}
                     value={text}
                     onChange={checkTypedWord}
+                    ref={wordInputRef}
                 />
             </div>
             <ul style={scoreListStyle}>

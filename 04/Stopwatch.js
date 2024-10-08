@@ -15,11 +15,8 @@ export default function Stopwatch({ isRunning, convertTime }) {
     }
 
     useEffect(() => {
-        if (isRunning === true) {
-            startCount();
-        } else if (isRunning === false) {
-            stopCount();
-        }
+        if (isRunning === true) startCount();
+        if (isRunning === false) stopCount();
     }, [isRunning]);
 
     return <div>{convertTime(time)}</div>;
