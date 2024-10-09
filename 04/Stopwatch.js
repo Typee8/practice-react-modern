@@ -1,8 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 
-export default function Stopwatch({ isRunning, convertTime }) {
+const Stopwatch = forwardRef(({ isRunning, convertTime }, ref) => {
     const [time, setTime] = useState(0);
     const intervalID = useRef();
+
+    useImperativeHandle(ref, () => time);
 
     function startCount() {
         intervalID.current = setInterval(() => {
@@ -20,4 +22,6 @@ export default function Stopwatch({ isRunning, convertTime }) {
     }, [isRunning]);
 
     return <div>{convertTime(time)}</div>;
-}
+});
+
+export default Stopwatch;

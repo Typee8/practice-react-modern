@@ -3,21 +3,23 @@
 import { useState, useEffect, useRef } from 'react';
 import useRandomItem from './hook';
 import Stopwatch from './Stopwatch';
+import { v4 as uuidv4 } from 'uuid';
 
 function SpeedTest() {
     const [word, regenerateWord] = useRandomItem(['devmentor.pl', 'abc', 'JavaScript']);
     const [text, setText] = useState('');
     const [isStopWatchRunning, setIsStopWatchRunning] = useState(false);
     const [signsTotalLength, setSignsTotalLength] = useState(0);
-    const [scores, setScores] = useState(null);
+    const [scores, setScores] = useState([]);
     const wordInputRef = useRef();
+    const StopwatchRef = useRef();
 
     useEffect(() => {
         regenerateWord();
     }, []);
 
     function convertTime(centiseconds) {
-        let outputCentiseconds = centiseconds % 100;
+        const outputCentiseconds = centiseconds % 100;
         const seconds = Math.floor((centiseconds % 6000) / 100);
         const minutes = Math.floor((centiseconds % 360000) / 6000);
         const hours = Math.floor(centiseconds / 360000);
@@ -29,18 +31,25 @@ function SpeedTest() {
 
     function checkTypedWord(evt) {
         setText(evt.target.value);
-        console.log(text);
+
         if (word === evt.target.value) {
             wordInputRef.current.blur();
             setSignsTotalLength((prevLength) => prevLength + text.length);
-            setScores({
-                scores,
+            const scoresObj = {
+                id: uuidv4(),
                 word: evt.target.value,
                 wordLength: evt.target.value.length,
-                /*                 passedTime: convertTime(passedTime), */
-            });
+                passedTime: convertTime(StopwatchRef.current),
+            };
+
+            if (scores.length === 0) {
+                setScores(scoresObj);
+            } else {
+                setScores([scores, scoresObj]);
+            }
             setText('');
             alert('Correct!');
+            console.log(`Whole Score Object:`, scores);
         }
     }
 
@@ -56,7 +65,11 @@ function SpeedTest() {
 
     return (
         <div style={containerStyle}>
-            <Stopwatch isRunning={isStopWatchRunning} convertTime={convertTime} />
+            <Stopwatch
+                ref={StopwatchRef}
+                isRunning={isStopWatchRunning}
+                convertTime={convertTime}
+            />
             <div>
                 <h1>{word}</h1>
                 <input
@@ -68,9 +81,7 @@ function SpeedTest() {
                 />
             </div>
             <ul style={scoreListStyle}>
-                {scores !== null
-                    ? Object.keys(scores).forEach(
-                          (key) => console.log(scores[key]) /* (
+                {/* (
                         <>
                             <li>
                                 Word:
@@ -85,9 +96,7 @@ function SpeedTest() {
                                 {key.passedTime}
                             </li>
                         </>
-                    ) */,
-                      )
-                    : null}
+                    ) */}
                 {/* 
                 <li>
                     Signs Total Length:
