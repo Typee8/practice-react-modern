@@ -4,7 +4,7 @@ const Stopwatch = forwardRef(({ isRunning, convertTime }, ref) => {
     const [time, setTime] = useState(0);
     const intervalID = useRef();
 
-    useImperativeHandle(ref, () => time);
+    useImperativeHandle(ref, () => ({ time, setTime }), [time, setTime]);
 
     function startCount() {
         intervalID.current = setInterval(() => {

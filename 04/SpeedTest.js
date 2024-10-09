@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
+import { v4 as uuidv4 } from 'uuid';
 import { useState, useEffect, useRef } from 'react';
 import useRandomItem from './hook';
 import Stopwatch from './Stopwatch';
-import { v4 as uuidv4 } from 'uuid';
 
 function SpeedTest() {
     const [word, regenerateWord] = useRandomItem(['devmentor.pl', 'abc', 'JavaScript']);
@@ -29,6 +29,10 @@ function SpeedTest() {
         ).padStart(2, '0')}:${String(outputCentiseconds).padStart(2, '0')}`;
     }
 
+    function resetStopWatch() {
+        StopwatchRef.current.setTime(0);
+    }
+
     function checkTypedWord(evt) {
         setText(evt.target.value);
 
@@ -39,17 +43,18 @@ function SpeedTest() {
                 id: uuidv4(),
                 word: evt.target.value,
                 wordLength: evt.target.value.length,
-                passedTime: convertTime(StopwatchRef.current),
+                passedTime: convertTime(StopwatchRef.current.time),
             };
 
             if (scores.length === 0) {
-                setScores(scoresObj);
+                setScores([scoresObj]);
             } else {
-                setScores([scores, scoresObj]);
+                setScores([...scores, scoresObj]);
             }
+            resetStopWatch();
             setText('');
             alert('Correct!');
-            console.log(`Whole Score Object:`, scores);
+            regenerateWord();
         }
     }
 
@@ -81,39 +86,26 @@ function SpeedTest() {
                 />
             </div>
             <ul style={scoreListStyle}>
-                {/* (
-                        <>
-                            <li>
-                                Word:
-                                {key.word}
-                            </li>
-                            <li>
-                                Length:
-                                {key.wordLength}
-                            </li>
-                            <li>
-                                Time:
-                                {key.passedTime}
-                            </li>
-                        </>
-                    ) */}
-                {/* 
                 <li>
                     Signs Total Length:
                     {signsTotalLength}
-                </li> */}
-                {/*                 <li>
-                    Word:
-                    {word}
                 </li>
-                <li>
-                    Length:
-                    {word.length}
-                </li>
-                <li>
-                    Time:
-                    {convertTime(passedTime)}
-                </li> */}
+                {scores.map((ele) => (
+                    <>
+                        <li>
+                            Word:
+                            {ele.word}
+                        </li>
+                        <li>
+                            Length:
+                            {ele.wordLength}
+                        </li>
+                        <li>
+                            Time:
+                            {ele.passedTime}
+                        </li>
+                    </>
+                ))}
             </ul>
         </div>
     );
