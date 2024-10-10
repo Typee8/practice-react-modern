@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useEffect, useRef } from 'react';
 import useRandomItem from './hook';

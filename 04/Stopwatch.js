@@ -1,4 +1,7 @@
-import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import {
+    useState, useEffect, useRef, forwardRef, useImperativeHandle,
+} from 'react';
+import PropTypes from 'prop-types';
 
 const Stopwatch = forwardRef(({ isRunning, convertTime }, ref) => {
     const [time, setTime] = useState(0);
@@ -23,5 +26,10 @@ const Stopwatch = forwardRef(({ isRunning, convertTime }, ref) => {
 
     return <div>{convertTime(time)}</div>;
 });
+
+Stopwatch.propTypes = {
+    isRunning: PropTypes.bool.isRequired,
+    convertTime: PropTypes.func.isRequired,
+};
 
 export default Stopwatch;
