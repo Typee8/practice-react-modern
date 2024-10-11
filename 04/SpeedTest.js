@@ -1,7 +1,14 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
+
 import { v4 as uuidv4 } from 'uuid';
-import { useState, useEffect, useRef } from 'react';
+import {
+    useState, useEffect, useRef, useCallback,
+} from 'react';
 import useRandomItem from './hook';
-import Stopwatch from './Stopwatch';
+import Stopwatch from './components/Stopwatch';
+import WordInput from './components/WordInput';
+import ScoreList from './components/ScoreList';
 
 function SpeedTest() {
     const [word, regenerateWord] = useRandomItem(['devmentor.pl', 'abc', 'JavaScript']);
@@ -9,14 +16,14 @@ function SpeedTest() {
     const [isStopWatchRunning, setIsStopWatchRunning] = useState(false);
     const [signsTotalLength, setSignsTotalLength] = useState(0);
     const [scores, setScores] = useState([]);
-    const wordInputRef = useRef();
+    const WordInputRef = useRef();
     const StopwatchRef = useRef();
 
     useEffect(() => {
         regenerateWord();
     }, []);
 
-    function convertTime(centiseconds) {
+    const convertTime = useCallback((centiseconds) => {
         const outputCentiseconds = centiseconds % 100;
         const seconds = Math.floor((centiseconds % 6000) / 100);
         const minutes = Math.floor((centiseconds % 360000) / 6000);
@@ -25,17 +32,17 @@ function SpeedTest() {
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(
             seconds,
         ).padStart(2, '0')}:${String(outputCentiseconds).padStart(2, '0')}`;
-    }
+    }, []);
 
     function resetStopWatch() {
         StopwatchRef.current.setTime(0);
     }
 
-    function checkTypedWord(evt) {
+    const checkTypedWord = useCallback((evt) => {
         setText(evt.target.value);
 
         if (word === evt.target.value) {
-            wordInputRef.current.blur();
+            WordInputRef.current.blur();
             setSignsTotalLength((prevLength) => prevLength + text.length);
             const scoresObj = {
                 id: uuidv4(),
@@ -54,7 +61,7 @@ function SpeedTest() {
             alert('Correct!');
             regenerateWord();
         }
-    }
+    }, []);
 
     const containerStyle = {
         display: 'flex',
@@ -62,49 +69,21 @@ function SpeedTest() {
         gap: '100px',
     };
 
-    const scoreListStyle = {
-        listStyle: 'none',
-    };
-
     return (
         <div style={containerStyle}>
             <Stopwatch
-                ref={StopwatchRef}
-                isRunning={isStopWatchRunning}
+                isStopWatchRunning={isStopWatchRunning}
                 convertTime={convertTime}
+                ref={StopwatchRef}
             />
-            <div>
-                <h1>{word}</h1>
-                <input
-                    onFocus={() => setIsStopWatchRunning(true)}
-                    onBlur={() => setIsStopWatchRunning(false)}
-                    value={text}
-                    onChange={checkTypedWord}
-                    ref={wordInputRef}
-                />
-            </div>
-            <ul style={scoreListStyle}>
-                <li>
-                    Signs Total Length:
-                    {signsTotalLength}
-                </li>
-                {scores.map((ele) => (
-                    <>
-                        <li>
-                            Word:
-                            {ele.word}
-                        </li>
-                        <li>
-                            Length:
-                            {ele.wordLength}
-                        </li>
-                        <li>
-                            Time:
-                            {ele.passedTime}
-                        </li>
-                    </>
-                ))}
-            </ul>
+            <WordInput
+                word={word}
+                text={text}
+                WordInputRef={WordInputRef}
+                setIsStopWatchRunning={setIsStopWatchRunning}
+                checkTypedWord={checkTypedWord}
+            />
+            <ScoreList scores={scores} signsTotalLength={signsTotalLength} />
         </div>
     );
 }
