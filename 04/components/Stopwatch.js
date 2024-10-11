@@ -3,11 +3,16 @@ import {
 } from 'react';
 import PropTypes from 'prop-types';
 
-const Stopwatch = forwardRef(({ isStopWatchRunning, convertTime }, ref) => {
+const Stopwatch = forwardRef(({ convertTime }, ref) => {
     const [time, setTime] = useState(0);
+    const [isRunning, setIsRunning] = useState(false);
     const intervalID = useRef();
 
-    useImperativeHandle(ref, () => ({ time, setTime }), [time, setTime]);
+    useImperativeHandle(ref, () => ({ time, setTime, setIsRunning }), [
+        time,
+        setTime,
+        setIsRunning,
+    ]);
 
     function startCount() {
         intervalID.current = setInterval(() => {
@@ -20,15 +25,14 @@ const Stopwatch = forwardRef(({ isStopWatchRunning, convertTime }, ref) => {
     }
 
     useEffect(() => {
-        if (isStopWatchRunning === true) startCount();
-        if (isStopWatchRunning === false) stopCount();
-    }, [isStopWatchRunning]);
+        if (isRunning === true) startCount();
+        if (isRunning === false) stopCount();
+    }, [isRunning]);
 
     return <div>{convertTime(time)}</div>;
 });
 
 Stopwatch.propTypes = {
-    isStopWatchRunning: PropTypes.bool.isRequired,
     convertTime: PropTypes.func.isRequired,
 };
 

@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
-
 import { v4 as uuidv4 } from 'uuid';
 import {
     useState, useEffect, useRef, useCallback,
@@ -12,11 +9,8 @@ import ScoreList from './components/ScoreList';
 
 function SpeedTest() {
     const [word, regenerateWord] = useRandomItem(['devmentor.pl', 'abc', 'JavaScript']);
-    const [text, setText] = useState('');
-    const [isStopWatchRunning, setIsStopWatchRunning] = useState(false);
     const [signsTotalLength, setSignsTotalLength] = useState(0);
     const [scores, setScores] = useState([]);
-    const WordInputRef = useRef();
     const StopwatchRef = useRef();
 
     useEffect(() => {
@@ -34,16 +28,8 @@ function SpeedTest() {
         ).padStart(2, '0')}:${String(outputCentiseconds).padStart(2, '0')}`;
     }, []);
 
-    function resetStopWatch() {
-        StopwatchRef.current.setTime(0);
-    }
-
-    const checkTypedWord = useCallback((evt) => {
-        setText(evt.target.value);
-
-        if (word === evt.target.value) {
-            WordInputRef.current.blur();
-            setSignsTotalLength((prevLength) => prevLength + text.length);
+    const updateScores = useCallback(
+        (evt) => {
             const scoresObj = {
                 id: uuidv4(),
                 word: evt.target.value,
@@ -56,12 +42,9 @@ function SpeedTest() {
             } else {
                 setScores([...scores, scoresObj]);
             }
-            resetStopWatch();
-            setText('');
-            alert('Correct!');
-            regenerateWord();
-        }
-    }, []);
+        },
+        [scores],
+    );
 
     const containerStyle = {
         display: 'flex',
@@ -71,17 +54,13 @@ function SpeedTest() {
 
     return (
         <div style={containerStyle}>
-            <Stopwatch
-                isStopWatchRunning={isStopWatchRunning}
-                convertTime={convertTime}
-                ref={StopwatchRef}
-            />
+            <Stopwatch convertTime={convertTime} ref={StopwatchRef} />
             <WordInput
                 word={word}
-                text={text}
-                WordInputRef={WordInputRef}
-                setIsStopWatchRunning={setIsStopWatchRunning}
-                checkTypedWord={checkTypedWord}
+                setSignsTotalLength={setSignsTotalLength}
+                updateScores={updateScores}
+                regenerateWord={regenerateWord}
+                StopwatchRef={StopwatchRef}
             />
             <ScoreList scores={scores} signsTotalLength={signsTotalLength} />
         </div>
