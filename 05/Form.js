@@ -4,9 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import TextInput from './TextInput';
 
 function Form({ fields }) {
-    function updateState() {
-        return console.log('Reducer will be written');
-    }
+    function updateState(state, action) {}
 
     function initInputsStates() {
         return fields.map((field) => {
@@ -23,7 +21,22 @@ function Form({ fields }) {
 
     const inputList = fields.map((field) => {
         const { label, signsType } = field;
-        return <TextInput key={uuidv4()} label={label} signsType={signsType} />;
+        const [textInputState] = state.filter((obj) => {
+            const result = Object.keys(obj).includes(label);
+            return result === true;
+        });
+        console.log(textInputState);
+        console.log(state);
+
+        return (
+            <TextInput
+                inputState={textInputState[label]}
+                onChange={dispatch}
+                key={uuidv4()}
+                label={label}
+                signsType={signsType}
+            />
+        );
     });
 
     return (
