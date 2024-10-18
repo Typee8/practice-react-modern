@@ -1,10 +1,17 @@
-import React from 'react';
+import Form from './Form';
 
-import account from './account';
-
-const ContactForm = () => {
-    console.log(account);
-    return <form>??</form>;
-};
+function ContactForm() {
+    return (
+        <Form
+            fields={[
+                { label: 'imie', signsType: 'string' },
+                { label: 'nazwisko', signsType: 'string' },
+                { label: 'numer telefonu', signsType: 'number' },
+                { label: 'temat' },
+                { label: 'wiadomość' },
+            ]}
+        />
+    );
+}
 
 export default ContactForm;
