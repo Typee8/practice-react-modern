@@ -1,39 +1,53 @@
-import { useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import TextInput from './TextInput';
 
 function Form({ fields }) {
-    function updateState(state, action) {}
+    function updateState(state, action) {
+        const stateCopy = JSON.parse(JSON.stringify(state));
+        const currentObj = stateCopy.find((obj) => obj.fieldID === action.fieldID);
+        const changedObj = action;
+
+        Object.assign(currentObj, changedObj);
+
+        const newState = stateCopy.map((obj) => {
+            if (obj.fieldID === action.fieldID) {
+                return currentObj;
+            }
+
+            return obj;
+        });
+
+        return newState;
+    }
 
     function initInputsStates() {
         return fields.map((field) => {
-            const { label } = field;
+            const { label, signsType } = field;
             const object = {};
-            object[label] = '';
+            object.name = label;
+            object.value = '';
+            object.signsType = signsType;
+            object.fieldID = uuidv4();
             return object;
         });
     }
 
     const [state, dispatch] = useReducer(updateState, null, initInputsStates);
 
-    useEffect(() => console.log(state), []);
-
-    const inputList = fields.map((field) => {
-        const { label, signsType } = field;
-        const [textInputState] = state.filter((obj) => {
-            const result = Object.keys(obj).includes(label);
-            return result === true;
-        });
-        console.log(textInputState);
-        console.log(state);
+    const inputList = state.map((obj) => {
+        const {
+            name, value, fieldID, signsType,
+        } = obj;
 
         return (
             <TextInput
-                inputState={textInputState[label]}
                 onChange={dispatch}
-                key={uuidv4()}
-                label={label}
+                value={value}
+                key={fieldID}
+                fieldID={fieldID}
+                label={name}
                 signsType={signsType}
             />
         );
