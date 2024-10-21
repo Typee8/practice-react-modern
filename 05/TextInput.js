@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-function TextInput({ label, value, onChange, fieldID, signsType }) {
-    /*     const [value, setValue] = useState(''); */
+function TextInput({
+    label, value, onChange, fieldID, signsType,
+}) {
     const [inputID] = useState(uuidv4());
 
     return (
@@ -21,6 +22,9 @@ function TextInput({ label, value, onChange, fieldID, signsType }) {
 
 TextInput.propTypes = {
     label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    fieldID: PropTypes.string.isRequired,
     signsType: PropTypes.oneOf(['string', 'number', 'any']),
 };
 
