@@ -14,7 +14,7 @@ function TextInput({
             <input
                 id={inputID}
                 value={value}
-                onChange={(evt) => onChange({ value: evt.target.value, fieldID })}
+                onChange={(evt) => onChange({ type: 'valueUpdate', value: evt.target.value, fieldID })}
             />
         </div>
     );

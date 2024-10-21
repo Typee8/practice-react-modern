@@ -4,24 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import TextInput from './TextInput';
 
 function Form({ fields }) {
-    function updateState(state, action) {
-        const stateCopy = JSON.parse(JSON.stringify(state));
-        const currentObj = stateCopy.find((obj) => obj.fieldID === action.fieldID);
-        const changedObj = action;
-
-        Object.assign(currentObj, changedObj);
-
-        const newState = stateCopy.map((obj) => {
-            if (obj.fieldID === action.fieldID) {
-                return currentObj;
-            }
-
-            return obj;
-        });
-
-        return newState;
-    }
-
     function initInputsStates() {
         return fields.map((field) => {
             const { label, signsType } = field;
@@ -34,7 +16,44 @@ function Form({ fields }) {
         });
     }
 
+    function updateState(state, action) {
+        switch (action.type) {
+        case 'clearForm': {
+            const newState = initInputsStates();
+            return newState;
+        }
+        case 'valueUpdate': {
+            const stateCopy = JSON.parse(JSON.stringify(state));
+            const currentObj = stateCopy.find((obj) => obj.fieldID === action.fieldID);
+            const changedObj = action;
+
+            Object.assign(currentObj, changedObj);
+
+            const newState = stateCopy.map((obj) => {
+                if (obj.fieldID === action.fieldID) {
+                    return currentObj;
+                }
+
+                return obj;
+            });
+            return newState;
+        }
+
+        default:
+            return state;
+        }
+    }
+
     const [state, dispatch] = useReducer(updateState, null, initInputsStates);
+
+    function saveContact(evt) {
+        evt.preventDefault();
+        // place for fetch
+
+        alert('Kontakt został zapisany.');
+        // Tutaj skończyłem
+        dispatch({ type: 'clearForm' });
+    }
 
     const inputList = state.map((obj) => {
         const {
@@ -54,7 +73,7 @@ function Form({ fields }) {
     });
 
     return (
-        <form>
+        <form onSubmit={saveContact}>
             {inputList}
             <input type="submit" />
         </form>
