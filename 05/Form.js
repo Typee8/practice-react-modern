@@ -19,32 +19,32 @@ function Form({ fields }) {
 
     function updateState(state, action) {
         switch (action.type) {
-            case 'clearForm': {
-                const newState = initInputsStates();
-                return newState;
-            }
-            case 'valueUpdate': {
-                const stateCopy = JSON.parse(JSON.stringify(state));
-                const currentObj = stateCopy.find((obj) => obj.fieldID === action.fieldID);
-                const changedObj = action;
+        case 'clearForm': {
+            const newState = initInputsStates();
+            return newState;
+        }
+        case 'valueUpdate': {
+            const stateCopy = JSON.parse(JSON.stringify(state));
+            const currentObj = stateCopy.find((obj) => obj.fieldID === action.fieldID);
+            const changedObj = action;
 
-                Object.assign(currentObj, changedObj);
+            Object.assign(currentObj, changedObj);
 
-                const newState = stateCopy.map((obj) => {
-                    if (obj.fieldID === action.fieldID) {
-                        return currentObj;
-                    }
+            const newState = stateCopy.map((obj) => {
+                if (obj.fieldID === action.fieldID) {
+                    return currentObj;
+                }
 
-                    return obj;
-                });
-                return newState;
-            }
-            case 'inputValidation': {
-                return action.newState;
-            }
+                return obj;
+            });
+            return newState;
+        }
+        case 'inputValidation': {
+            return action.newState;
+        }
 
-            default:
-                return state;
+        default:
+            return state;
         }
     }
 
@@ -102,7 +102,7 @@ function Form({ fields }) {
 
         const newState = copyState.map((obj) => {
             const wantedObj = errors.find((error) => error.id === obj.fieldID);
-            console.log(`Wanted object be like: ${wantedObj}`);
+
             if (!wantedObj) {
                 return obj;
             }
@@ -127,7 +127,9 @@ function Form({ fields }) {
     }
 
     const inputList = state.map((obj) => {
-        const { name, value, fieldID, signsType, errorObj } = obj;
+        const {
+            name, value, fieldID, signsType, errorObj,
+        } = obj;
 
         return (
             <TextInput
