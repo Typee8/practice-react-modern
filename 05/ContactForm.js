@@ -4,8 +4,8 @@ function ContactForm() {
     return (
         <Form
             fields={[
-                { label: 'imie', signsType: 'string' },
-                { label: 'nazwisko', signsType: 'string' },
+                { label: 'imie', signsType: 'text' },
+                { label: 'nazwisko', signsType: 'text' },
                 { label: 'numer telefonu', signsType: 'number' },
                 { label: 'temat' },
                 { label: 'wiadomość' },
